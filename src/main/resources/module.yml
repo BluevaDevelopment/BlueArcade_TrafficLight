@@ -1,0 +1,12 @@
+name: Traffic Light
+id: traffic_light
+version: 1.0.0
+type: MICROGAME
+api-version: 1.0
+main: net.blueva.arcade.modules.trafficlight.TrafficLightModule
+
+authors:
+  - Blueva
+  - Whiron
+
+description: "Advance on green, freeze on red, and reach the goal without getting caught moving."
