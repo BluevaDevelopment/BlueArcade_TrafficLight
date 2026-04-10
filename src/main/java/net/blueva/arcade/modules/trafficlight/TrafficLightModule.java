@@ -50,7 +50,7 @@ public class TrafficLightModule implements GameModule<Player, Location, World, M
         VoteMenuAPI voteMenu = ModuleAPI.getVoteMenuAPI();
         AchievementsAPI achievementsAPI = ModuleAPI.getAchievementsAPI();
 
-        statsService = new TrafficLightStatsService(statsAPI, moduleInfo);
+        statsService = new TrafficLightStatsService(statsAPI, moduleInfo, moduleConfig);
         statsService.registerStats();
 
         moduleConfig.register("language.yml", 1);

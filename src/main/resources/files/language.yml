@@ -24,6 +24,11 @@ vote_menu:
     - "<white>{votes}</white> <gray>votes.</gray>"
 
 stats:
+
+  descriptions:
+    wins: "Traffic Light wins"
+    games_played: "Traffic Light games played"
+    finish_line_crosses: "Times you reached safety"
   labels:
     finish_line_crosses: "Finishes reached"
     games_played: "Traffic Light games played"

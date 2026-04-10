@@ -12,6 +12,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -106,6 +110,64 @@ public class TrafficLightListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context = gameManager.getGameContext(player);
+
+        if (!isTrafficLightParticipant(context, player)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context = gameManager.getGameContext(player);
+
+        if (!isTrafficLightParticipant(context, player)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context = gameManager.getGameContext(player);
+
+        if (!isTrafficLightParticipant(context, player)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDamageByPlayer(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) {
+            return;
+        }
+
+        if (!(event.getDamager() instanceof Player attacker)) {
+            return;
+        }
+
+        GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context = gameManager.getGameContext(victim);
+        if (context == null || !context.isPlayerPlaying(victim)) {
+            return;
+        }
+
+        if (!context.isPlayerPlaying(attacker)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
     private Material getDeathBlock(GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context) {
         try {
             String deathBlockName = context.getDataAccess().getGameData("basic.death_block", String.class);
@@ -138,4 +200,13 @@ public class TrafficLightListener implements Listener {
             return false;
         }
     }
+
+    private boolean isTrafficLightParticipant(
+            GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context,
+            Player player
+    ) {
+        return context != null && (context.isPlayerPlaying(player) || context.getSpectators().contains(player));
+    }
+
+
 }

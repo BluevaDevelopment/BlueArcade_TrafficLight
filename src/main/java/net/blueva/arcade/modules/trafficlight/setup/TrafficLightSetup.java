@@ -28,7 +28,7 @@ public class TrafficLightSetup implements GameSetupHandler {
 
     private boolean handleInternal(SetupContext<Player, CommandSender, Location> context) {
         if (!context.hasHandlerArgs(1)) {
-            context.getMessagesAPI().send(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.usage_finish_line"));
+            context.getMessagesAPI().sendRaw(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.usage_finish_line"));
             return true;
         }
 
@@ -38,7 +38,7 @@ public class TrafficLightSetup implements GameSetupHandler {
             return handleFinishLine(context);
         }
 
-        context.getMessagesAPI().send(context.getPlayer(), module.getCoreConfig().getLanguage("admin_commands.errors.unknown_subcommand"));
+        context.getMessagesAPI().sendRaw(context.getPlayer(), module.getCoreConfig().getLanguage("admin_commands.errors.unknown_subcommand"));
 
         return true;
     }
@@ -76,7 +76,7 @@ public class TrafficLightSetup implements GameSetupHandler {
 
         if (!hasFinishLine) {
             if (context.getSender() != null) {
-                context.getMessagesAPI().send(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.not_configured")
+                context.getMessagesAPI().sendRaw(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.not_configured")
                         .replace("{arena_id}", String.valueOf(context.getArenaId())));
             }
         }
@@ -86,26 +86,26 @@ public class TrafficLightSetup implements GameSetupHandler {
 
     private boolean handleFinishLine(SetupContext<Player, CommandSender, Location> context) {
         if (!context.isPlayer()) {
-            context.getMessagesAPI().send(context.getPlayer(), module.getCoreConfig().getLanguage("admin_commands.errors.must_be_player"));
+            context.getMessagesAPI().sendRaw(context.getPlayer(), module.getCoreConfig().getLanguage("admin_commands.errors.must_be_player"));
             return true;
         }
 
         if (!context.hasHandlerArgs(1)) {
-            context.getMessagesAPI().send(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.usage_finish_line"));
+            context.getMessagesAPI().sendRaw(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.usage_finish_line"));
             return true;
         }
 
         String action = context.getHandlerArg(0).toLowerCase();
 
         if (!"set".equals(action)) {
-            context.getMessagesAPI().send(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.usage_finish_line"));
+            context.getMessagesAPI().sendRaw(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.usage_finish_line"));
             return true;
         }
 
         Player player = context.getPlayer();
 
         if (!context.getSelection().hasCompleteSelection(player)) {
-            context.getMessagesAPI().send(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.must_use_stick"));
+            context.getMessagesAPI().sendRaw(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.must_use_stick"));
             return true;
         }
 
@@ -120,7 +120,7 @@ public class TrafficLightSetup implements GameSetupHandler {
         int z = (int) Math.abs(pos2.getZ() - pos1.getZ()) + 1;
         int blocks = x * y * z;
 
-        context.getMessagesAPI().send(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.set_success")
+        context.getMessagesAPI().sendRaw(context.getPlayer(), module.getModuleConfig().getStringFrom("language.yml", "setup_messages.set_success")
                 .replace("{blocks}", String.valueOf(blocks))
                 .replace("{x}", String.valueOf(x))
                 .replace("{y}", String.valueOf(y))

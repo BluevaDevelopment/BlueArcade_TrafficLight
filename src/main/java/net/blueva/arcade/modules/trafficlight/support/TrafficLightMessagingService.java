@@ -70,6 +70,11 @@ public class TrafficLightMessagingService {
     }
 
     public void handlePlayerDeath(GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context, Player player, boolean deathBlock) {
+        // Don't broadcast death messages for spectators
+        if (context.getSpectators().contains(player)) {
+            return;
+        }
+
         String path = deathBlock ? "messages.deaths.death_block" : "messages.deaths.void";
         String message = getRandomMessage(path);
         if (message == null) {
