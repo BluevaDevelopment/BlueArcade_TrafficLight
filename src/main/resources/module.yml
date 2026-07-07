@@ -2,7 +2,7 @@ name: Traffic Light
 id: traffic_light
 version: ${revision}
 type: MICROGAME
-api-version: 3.3
+api-version: 3.4
 main: net.blueva.arcade.modules.trafficlight.TrafficLightModule
 
 authors:

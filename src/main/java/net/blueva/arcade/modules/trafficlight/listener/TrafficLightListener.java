@@ -11,10 +11,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -100,8 +102,8 @@ public class TrafficLightListener implements Listener {
                 gameManager.handlePlayerFinish(player);
                 gameManager.broadcastFinish(context, player, position);
 
-                String title = gameManager.getModuleConfig().getStringFrom("language.yml", "titles.finished.title");
-                String subtitle = gameManager.getModuleConfig().getStringFrom("language.yml", "titles.finished.subtitle")
+                String title = gameManager.getModuleConfig().getTranslation(player, "titles.finished.title");
+                String subtitle = gameManager.getModuleConfig().getTranslation(player, "titles.finished.subtitle")
                         .replace("{position}", String.valueOf(position));
 
                 context.getTitlesAPI().sendRaw(player, title, subtitle, 0, 80, 20);
@@ -162,6 +164,24 @@ public class TrafficLightListener implements Listener {
         }
 
         if (!context.isPlayerPlaying(attacker)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerFallDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        if (event.getCause() != EntityDamageEvent.DamageCause.FALL) {
+            return;
+        }
+
+        GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context = gameManager.getGameContext(player);
+        if (context == null || !context.isPlayerPlaying(player)) {
             return;
         }
 

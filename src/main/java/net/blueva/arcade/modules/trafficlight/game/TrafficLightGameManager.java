@@ -67,11 +67,11 @@ public class TrafficLightGameManager {
 
             context.getSoundsAPI().play(player, coreConfig.getSound("sounds.starting_game.countdown"));
 
-            String title = coreConfig.getLanguage("titles.starting_game.title")
+            String title = coreConfig.getLanguage(player, "titles.starting_game.title")
                     .replace("{game_display_name}", moduleInfo.getName())
                     .replace("{time}", String.valueOf(secondsLeft));
 
-            String subtitle = coreConfig.getLanguage("titles.starting_game.subtitle")
+            String subtitle = coreConfig.getLanguage(player, "titles.starting_game.subtitle")
                     .replace("{game_display_name}", moduleInfo.getName())
                     .replace("{time}", String.valueOf(secondsLeft));
 
@@ -83,10 +83,10 @@ public class TrafficLightGameManager {
         for (Player player : context.getPlayers()) {
             if (!player.isOnline()) continue;
 
-            String title = coreConfig.getLanguage("titles.game_started.title")
+            String title = coreConfig.getLanguage(player, "titles.game_started.title")
                     .replace("{game_display_name}", moduleInfo.getName());
 
-            String subtitle = coreConfig.getLanguage("titles.game_started.subtitle")
+            String subtitle = coreConfig.getLanguage(player, "titles.game_started.subtitle")
                     .replace("{game_display_name}", moduleInfo.getName());
 
             context.getTitlesAPI().sendRaw(player, title, subtitle, 0, 20, 20);
@@ -159,17 +159,17 @@ public class TrafficLightGameManager {
     }
 
     private void updateGameHud(GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context, int timeLeft, List<Player> alivePlayers, List<Player> spectators) {
-        String actionBarTemplate = coreConfig.getLanguage("action_bar.in_game.global");
         List<Player> allPlayers = context.getPlayers();
 
         for (Player player : allPlayers) {
             if (!player.isOnline()) continue;
 
+            String actionBarTemplate = coreConfig.getLanguage(player, "action_bar.in_game.global");
             String actionBarMessage = messagingService.formatActionBar(actionBarTemplate, context, timeLeft);
             context.getMessagesAPI().sendActionBar(player, actionBarMessage);
 
             Map<String, String> customPlaceholders = getCustomPlaceholders(player);
-            customPlaceholders.put("time", String.valueOf(timeLeft));
+            customPlaceholders.put("time", formatCountdownTime(timeLeft));
             customPlaceholders.put("round", String.valueOf(context.getCurrentRound()));
             customPlaceholders.put("round_max", String.valueOf(context.getMaxRounds()));
             customPlaceholders.put("alive", String.valueOf(alivePlayers.size()));
@@ -382,7 +382,7 @@ public class TrafficLightGameManager {
         arenaState.getPushbackPrimed().remove(player.getUniqueId());
         arenaState.getPushbackWindows().remove(player.getUniqueId());
 
-        player.setGameMode(GameMode.SPECTATOR);
+        context.setPlayerSpectating(player, true);
         context.getSoundsAPI().play(player, coreConfig.getSound("sounds.in_game.dead"));
         messagingService.handleRedLightDeathMessage(context, player);
     }
@@ -444,4 +444,10 @@ public class TrafficLightGameManager {
         }
         visualEffectsAPI.playDeathEffect(player, location != null ? location : player.getLocation());
     }
+
+    private static String formatCountdownTime(int seconds) {
+        int safeSeconds = Math.max(0, seconds);
+        return String.format("%02d:%02d", safeSeconds / 60, safeSeconds % 60);
+    }
+
 }

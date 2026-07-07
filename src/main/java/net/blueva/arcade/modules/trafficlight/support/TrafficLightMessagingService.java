@@ -24,9 +24,8 @@ public class TrafficLightMessagingService {
     }
 
     public void sendDescription(GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context) {
-        List<String> description = moduleConfig.getStringListFrom("language.yml", "description");
-
         for (Player player : context.getPlayers()) {
+            List<String> description = moduleConfig.getTranslationList(player, "description");
             for (String line : description) {
                 context.getMessagesAPI().sendRaw(player, line);
             }
@@ -37,7 +36,7 @@ public class TrafficLightMessagingService {
         if (template == null) return "";
 
         return template
-                .replace("{time}", String.valueOf(timeLeft))
+                .replace("{time}", formatCountdownTime(timeLeft))
                 .replace("{round}", String.valueOf(context.getCurrentRound()))
                 .replace("{round_max}", String.valueOf(context.getMaxRounds()));
     }
@@ -51,7 +50,7 @@ public class TrafficLightMessagingService {
     }
 
     public void sendPushbackWarning(GameContext<Player, Location, World, Material, ItemStack, Sound, Block, Entity> context, Player player) {
-        String warning = moduleConfig.getStringFrom("language.yml", "messages.red_light.pushback_warning");
+        String warning = moduleConfig.getTranslation(player, "messages.red_light.pushback_warning");
         if (warning != null && !warning.isEmpty()) {
             context.getMessagesAPI().sendRaw(player, warning);
         }
@@ -103,7 +102,7 @@ public class TrafficLightMessagingService {
     }
 
     private String getRandomMessage(String path) {
-        List<String> messages = moduleConfig.getStringListFrom("language.yml", path);
+        List<String> messages = moduleConfig.getTranslationList(null, path);
         if (messages == null || messages.isEmpty()) {
             return null;
         }
@@ -111,4 +110,10 @@ public class TrafficLightMessagingService {
         int index = ThreadLocalRandom.current().nextInt(messages.size());
         return messages.get(index);
     }
+
+    private static String formatCountdownTime(int seconds) {
+        int safeSeconds = Math.max(0, seconds);
+        return String.format("%02d:%02d", safeSeconds / 60, safeSeconds % 60);
+    }
+
 }
