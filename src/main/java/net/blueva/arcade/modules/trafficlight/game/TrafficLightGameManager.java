@@ -382,7 +382,7 @@ public class TrafficLightGameManager {
         arenaState.getPushbackPrimed().remove(player.getUniqueId());
         arenaState.getPushbackWindows().remove(player.getUniqueId());
 
-        context.setPlayerSpectating(player, true);
+        player.setGameMode(GameMode.SPECTATOR);
         context.getSoundsAPI().play(player, coreConfig.getSound("sounds.in_game.dead"));
         messagingService.handleRedLightDeathMessage(context, player);
     }
