@@ -1,7 +1,7 @@
 # BlueArcade - Traffic Light
 
 This resource is a **BlueArcade 3 module** and requires the core plugin to run.
-Get BlueArcade 3 here: https://store.blueva.net/resources/resource/1-blue-arcade/
+Get BlueArcade 3 here: https://blueva.net/store/blue-arcade
 
 ## Description
 Advance on green, freeze on red, and reach the goal without getting caught moving.
