@@ -55,6 +55,5 @@ public class TrafficLightStatsService {
             return;
         }
         statsAPI.addModuleStat(player, moduleInfo.getId(), "wins", 1);
-        statsAPI.addGlobalStat(player, "wins", 1);
     }
 }
